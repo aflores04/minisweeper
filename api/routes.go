@@ -15,7 +15,7 @@ func InitRoutes() *gin.Engine {
 	gameHandler 	:= handlers.NewGameHandler(gameService)
 
 	router.POST("/game", gameHandler.CreateGameHandler)
-	router.POST("/game/flag")
+	router.POST("/game/flag", gameHandler.FlagHandler)
 	router.GET("/game/current", gameHandler.CurrentGameHandler)
 
 	return router

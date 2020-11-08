@@ -7,6 +7,7 @@ import (
 type IGame interface {
 	SetPoints()
 	SetMines()
+	GetSquare() *Square
 }
 
 type Game struct {
@@ -22,6 +23,10 @@ func New(cols int, rows int, mines int) *Game {
 		Rows: rows,
 		Mines: mines,
 	}
+}
+
+func (g *Game) GetSquare() *Square {
+	return &g.Square
 }
 
 func (g *Game) SetPoints() {	

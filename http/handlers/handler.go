@@ -5,10 +5,10 @@ import (
 )
 
 type GameHandler struct {
-	Service *services.GameService
+	Service services.IGameService
 }
 
-func NewGameHandler(service *services.GameService) *GameHandler {
+func NewGameHandler(service services.IGameService) *GameHandler {
 	return &GameHandler{
 		Service: service,
 	}
