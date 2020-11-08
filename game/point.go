@@ -1,6 +1,7 @@
 package game
 
 type Point struct {
+	ID int		`json:"id"`
 	X int		`json:"x"`
 	Y int		`json:"y"`
 	Mine bool	`json:"mine"`

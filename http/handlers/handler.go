@@ -10,7 +10,7 @@ type GameHandler struct {
 
 func NewGameHandler(service *services.GameService) *GameHandler {
 	return &GameHandler{
-		Service: services.NewGameService(),
+		Service: service,
 	}
 }
 

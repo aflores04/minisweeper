@@ -8,8 +8,6 @@ import (
 )
 
 func (handler *GameHandler) CreateGameHandler (c *gin.Context) {
-	game := handler.Service.Start(10,10,10)
-
 	var postRequest request.CreateGameRequest
 
 	if err := c.BindJSON(&postRequest); err != nil {
@@ -19,6 +17,8 @@ func (handler *GameHandler) CreateGameHandler (c *gin.Context) {
 		})
 		return
 	}
+
+	game := handler.Service.Start(postRequest.Rows, postRequest.Cols, postRequest.Mines)
 
 	c.JSON(200, gin.H{
 		"status":  http.StatusOK,

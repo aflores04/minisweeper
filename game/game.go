@@ -4,6 +4,11 @@ import (
 	"math/rand"
 )
 
+type IGame interface {
+	SetPoints()
+	SetMines()
+}
+
 type Game struct {
 	Cols int `json:"cols"`
 	Rows int `json:"rows"`
