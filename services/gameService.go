@@ -12,12 +12,12 @@ func NewGameService() *GameService {
 	return &GameService{}
 }
 
-func (g GameService) Start(rows int, cols int, mines int) *game.Game {
-	game := game.New(rows, cols, mines)
+func (g *GameService) Start(rows int, cols int, mines int) *game.Game {
+	newGame := game.New(rows, cols, mines)
 
-	game.SetPoints()
-	game.SetMines()
+	newGame.SetPoints()
+	newGame.SetMines()
 
-	return game
+	return newGame
 }
 

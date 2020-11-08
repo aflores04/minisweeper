@@ -2,15 +2,17 @@ package api
 
 import (
 	"github.com/gin-gonic/gin"	
-	"minisweeper/handlers"
+	"minisweeper/http/handlers"
 	"minisweeper/services"
 )
 
-func InitRoutes(router *gin.Engine) *gin.Engine {
+func InitRoutes() *gin.Engine {
+	router := gin.Default()
+
 	gameService := services.NewGameService()
 	gameHandler := handlers.NewGameHandler(gameService)
 
-	router.POST("/game", gameHandler.NewGameHandler)
+	router.POST("/game", gameHandler.CreateGameHandler)
 
 	return router
 }

@@ -1,7 +1,6 @@
 package game
 
 import (
-	"fmt"
 	"reflect"
 	"testing"
 	"github.com/stretchr/testify/assert"
