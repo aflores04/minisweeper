@@ -1,15 +1,16 @@
-package services
+package services_test
 
 import (
 	"github.com/go-playground/assert/v2"
 	"minisweeper/repositories"
+	"minisweeper/services"
 	"testing"
 )
 
 func TestGameService_RemoveFlag(t *testing.T) {
 	repository := repositories.NewGameRepository()
 
-	service := NewGameService(repository)
+	service := services.NewGameService(repository)
 
 	service.Start(2,2,1)
 
@@ -21,7 +22,7 @@ func TestGameService_RemoveFlag(t *testing.T) {
 func TestGameService_AddFlag(t *testing.T) {
 	repository := repositories.NewGameRepository()
 
-	service := NewGameService(repository)
+	service := services.NewGameService(repository)
 
 	service.Start(2,2,1)
 
@@ -39,7 +40,7 @@ func TestGameService_AddRemoveFlagWithNoGame(t *testing.T) {
 		}
 	}()
 
-	service := NewGameService(repository)
+	service := services.NewGameService(repository)
 
 	service.AddRemoveFlag(1,1,true)
 }
