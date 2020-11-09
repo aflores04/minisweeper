@@ -8,8 +8,8 @@ type Point struct {
 	Flag bool	`json:"flag"`
 }
 
-func NewPoint(x int, y int, mine bool) *Point {
-	return &Point{
+func NewPoint(x int, y int, mine bool) Point {
+	return Point{
 		X: x,
 		Y: y,
 		Mine: mine,

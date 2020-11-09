@@ -11,7 +11,7 @@ func (handler *GameHandler) CreateGameHandler (c *gin.Context) {
 	var postRequest request.CreateGameRequest
 
 	if err := c.BindJSON(&postRequest); err != nil {
-		c.JSON(400, response.ErrorResponse{
+		c.JSON(http.StatusBadRequest, response.ErrorResponse{
 			Code:		http.StatusBadRequest,
 			Message:	"error in request",
 		})
@@ -20,7 +20,7 @@ func (handler *GameHandler) CreateGameHandler (c *gin.Context) {
 
 	game := handler.Service.Start(postRequest.Rows, postRequest.Cols, postRequest.Mines)
 
-	c.JSON(200, gin.H{
+	c.JSON(http.StatusOK, gin.H{
 		"status":  http.StatusOK,
 		"game": game,
 	})

@@ -8,7 +8,7 @@ import (
 func (handler *GameHandler) CurrentGameHandler (c *gin.Context) {
 	current := handler.Service.GetCurrent()
 
-	c.JSON(200, gin.H{
+	c.JSON(http.StatusOK, gin.H{
 		"status":  http.StatusOK,
 		"game": current,
 	})

@@ -1,6 +1,6 @@
 package request
 
-type AddFlagRequest struct {
+type FlagRequest struct {
 	Col int `json:"col"`
 	Row int `json:"row"`
 	Flag bool `json:"flag"`

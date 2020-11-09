@@ -7,7 +7,7 @@ import (
 type IGameRepository interface {
 	CreateGame(rows int, cols int, mines int) game.IGame
 	GetGame() game.IGame
-	AddRemoveFlag(row int, col int, flag bool)
+	AddRemoveFlag(row int, col int, flag bool) game.Point
 	GetPoint(row int, col int) game.Point
 }
 
@@ -33,12 +33,13 @@ func (r *GameRepository) GetGame() game.IGame {
 	return r.game
 }
 
-func (r *GameRepository) AddRemoveFlag(row int, col int, flag bool) {
+func (r *GameRepository) AddRemoveFlag(row int, col int, flag bool) game.Point {
 	if r.game != nil {
 		for key, point := range r.game.GetSquare().Points {
 			if point.Y == row && point.X == col {
 				r.game.Square.Points[key].Flag = flag
-				return
+
+				return r.game.Square.Points[key]
 			}
 		}
 	}
