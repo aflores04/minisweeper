@@ -9,6 +9,7 @@ type IGameService interface {
 	Start(rows int, cols int, mines int) game.IGame
 	GetCurrent() game.IGame
 	AddRemoveFlag(row int, col int, flag bool)
+	GetPoint(row int, col int) game.Point
 }
 
 type GameService struct {
@@ -31,7 +32,11 @@ func (g *GameService) GetCurrent() game.IGame {
 	return g.repository.GetGame()
 }
 
-func (g *GameService) AddRemoveFlag(row int, col int, flag bool) {
+func (g *GameService) GetPoint(row int, col int) game.Point {
+	return g.repository.GetPoint(row, col)
+}
 
+func (g *GameService) AddRemoveFlag(row int, col int, flag bool) {
+	g.repository.AddRemoveFlag(row, col, flag)
 }
 

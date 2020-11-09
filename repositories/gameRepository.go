@@ -1,7 +1,6 @@
 package repositories
 
 import (
-	"log"
 	"minisweeper/game"
 )
 
@@ -9,10 +8,11 @@ type IGameRepository interface {
 	CreateGame(rows int, cols int, mines int) game.IGame
 	GetGame() game.IGame
 	AddRemoveFlag(row int, col int, flag bool)
+	GetPoint(row int, col int) game.Point
 }
 
 type GameRepository struct {
-	game game.IGame
+	game *game.Game
 }
 
 func NewGameRepository() IGameRepository {
@@ -34,7 +34,26 @@ func (r *GameRepository) GetGame() game.IGame {
 }
 
 func (r *GameRepository) AddRemoveFlag(row int, col int, flag bool) {
-	for point := range r.game.GetSquare().Points {
-		log.Println(point)
+	if r.game != nil {
+		for key, point := range r.game.GetSquare().Points {
+			if point.Y == row && point.X == col {
+				r.game.Square.Points[key].Flag = flag
+				return
+			}
+		}
 	}
+
+	panic("there is no game running")
+}
+
+func (r *GameRepository) GetPoint(row int, col int) game.Point {
+	if r.game != nil {
+		for _, point := range r.game.GetSquare().Points {
+			if point.Y == row && point.X == col {
+				return point
+			}
+		}
+	}
+
+	panic("there is no game running")
 }
