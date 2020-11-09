@@ -42,6 +42,8 @@ func (r *GameRepository) AddRemoveFlag(row int, col int, flag bool) game.Point {
 				return r.game.Square.Points[key]
 			}
 		}
+
+		panic("error in request")
 	}
 
 	panic("there is no game running")
