@@ -10,6 +10,16 @@ import (
 func (handler *GameHandler) CreateGameHandler (c *gin.Context) {
 	var postRequest request.CreateGameRequest
 
+	defer func() {
+		if r := recover(); r != nil {
+			c.JSON(http.StatusBadRequest, response.ErrorResponse{
+				Code:		http.StatusBadRequest,
+				Message:	r.(string),
+			})
+			return
+		}
+	}()
+
 	if err := c.BindJSON(&postRequest); err != nil {
 		c.JSON(http.StatusBadRequest, response.ErrorResponse{
 			Code:		http.StatusBadRequest,

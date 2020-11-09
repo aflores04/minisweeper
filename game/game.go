@@ -18,6 +18,11 @@ type Game struct {
 }
 
 func New(cols int, rows int, mines int) *Game {
+
+	if cols <= 0 || rows <= 0 || mines <= 0 {
+		panic("error in request")
+	}
+
 	return &Game{
 		Cols: cols,
 		Rows: rows,
