@@ -1,7 +1,11 @@
 package game
 
 type Square struct {
-	Points []Point `json:"points"`
+	PointRows []*PointRow
+}
+
+type PointRow struct {
+	Points []*Point
 }
 
 func NewSquare() *Square {
