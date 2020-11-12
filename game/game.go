@@ -38,13 +38,7 @@ func gameMap(rows int, cols int) Square {
 	for i := 0; i < rows; i++ {
 		var pointRow PointRow
 		for x := 0; x < cols; x++ {
-			point := Point{
-				X: x,
-				Y: i,
-				Mine: false,
-				Value: 0,
-				Flag: false,
-			}
+			point := NewPoint(x, i, false, 0)
 			pointRow.Points = append(pointRow.Points, &point)
 		}
 		square.PointRows = append(square.PointRows, &pointRow)
@@ -131,14 +125,6 @@ func (g *Game) SetValues()  {
 			}
 		}
 	}
-}
-
-func (g *Game) findNearlyMines(point Point) {
-	//if nextPoint, err := g.FindPointByPosition(point.Y+1, point.X); err != nil {
-	//	if nextPoint.Mine {
-	//		g.Square.Points[nextPoint.Pos].Value++
-	//	}
-	//}
 }
 
 func (g *Game) FindPointByPosition(y int, x int) (*Point, error) {

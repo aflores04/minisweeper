@@ -9,7 +9,7 @@ import (
 )
 
 func TestGameService_RemoveFlag(t *testing.T) {
-	var flagResponse response.FlagResponse
+	var pointResponse response.PointResponse
 
 	repository := repositories.NewGameRepository()
 
@@ -17,13 +17,13 @@ func TestGameService_RemoveFlag(t *testing.T) {
 
 	service.Start(2,2,1)
 
-	flagResponse = service.AddRemoveFlag(1,1,false)
+	pointResponse = service.AddRemoveFlag(1,1,false)
 
-	assert.Equal(t, false, flagResponse.Flag)
+	assert.Equal(t, false, pointResponse.Flag)
 }
 
 func TestGameService_AddFlag(t *testing.T) {
-	var flagResponse response.FlagResponse
+	var pointResponse response.PointResponse
 
 	repository := repositories.NewGameRepository()
 
@@ -31,9 +31,9 @@ func TestGameService_AddFlag(t *testing.T) {
 
 	service.Start(2,2,1)
 
-	flagResponse = service.AddRemoveFlag(1,1,true)
+	pointResponse = service.AddRemoveFlag(1,1,true)
 
-	assert.Equal(t, true, flagResponse.Flag)
+	assert.Equal(t, true, pointResponse.Flag)
 }
 
 func TestGameService_AddRemoveFlagWithNoGame(t *testing.T) {
@@ -48,4 +48,44 @@ func TestGameService_AddRemoveFlagWithNoGame(t *testing.T) {
 	service := services.NewGameService(repository)
 
 	service.AddRemoveFlag(1,1,true)
+}
+
+func TestGameService_OpenPointWithNoGame(t *testing.T) {
+	repository := repositories.NewGameRepository()
+
+	defer func() {
+		if r := recover(); r != nil {
+			assert.Equal(t, r, "there is no game running")
+		}
+	}()
+
+	service := services.NewGameService(repository)
+
+	service.OpenPoint(1,1)
+}
+
+func TestGameService_OpenPointWithBadRequest(t *testing.T) {
+	repository := repositories.NewGameRepository()
+
+	service := services.NewGameService(repository)
+	service.Start(3,3,3)
+
+	defer func() {
+		if r := recover(); r != nil {
+			assert.Equal(t, r, "error in request")
+		}
+	}()
+
+	service.OpenPoint(123,-123)
+}
+
+func TestGameService_OpenPoint(t *testing.T) {
+	repository := repositories.NewGameRepository()
+
+	service := services.NewGameService(repository)
+	service.Start(3,3,3)
+
+	successResponse := service.OpenPoint(1,1)
+
+	assert.Equal(t, true, successResponse.Open)
 }

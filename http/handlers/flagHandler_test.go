@@ -23,9 +23,10 @@ func setUpRouter() *gin.Engine  {
 	gameHandler 	:= handlers.NewGameHandler(gameService)
 
 	// init a game
-	gameRepository.CreateGame(2,2,0)
+	gameRepository.CreateGame(2,2,1)
 
-	router.POST("/game/flag", gameHandler.FlagHandler)
+	router.PUT("/game/point/flag", gameHandler.FlagHandler)
+	router.PUT("/game/point/open", gameHandler.OpenPointHandler)
 
 	return router
 }
@@ -43,7 +44,7 @@ func TestGameHandler_FlagHandlerWithBadRequest(t *testing.T) {
 		router := setUpRouter()
 
 		out, _ := json.Marshal(invalidRequest)
-		req, _ := http.NewRequest("POST", "/game/flag", bytes.NewBuffer(out))
+		req, _ := http.NewRequest("PUT", "/game/point/flag", bytes.NewBuffer(out))
 		resp := httptest.NewRecorder()
 
 		router.ServeHTTP(resp, req)
@@ -60,31 +61,32 @@ func TestGameHandler_FlagHandlerWithBadRequest(t *testing.T) {
 }
 
 func TestGameHandler_FlagHandlerSuccessResponse(t *testing.T) {
-	var successResponse response.FlagResponse
-	validRequest := request.FlagRequest{Col: 1, Row: 1, Flag: true}
+	var successResponse response.PointResponse
+	validRequest := request.PointRequest{Col: 1, Row: 1, Flag: true}
 
 	router := setUpRouter()
 	out, _ := json.Marshal(validRequest)
-	req, _ := http.NewRequest("POST", "/game/flag", bytes.NewBuffer(out))
+	req, _ := http.NewRequest("PUT", "/game/point/flag", bytes.NewBuffer(out))
 	resp := httptest.NewRecorder()
 
 	router.ServeHTTP(resp, req)
 
-	expectedResponse := response.FlagResponse{Code: http.StatusOK, Row: 1, Col: 1, Mine: false, Flag: true}
+	expectedResponse := response.PointResponse{Code: http.StatusOK, Row: 1, Col: 1, Value: 1, Mine: false, Flag: true}
 
 	_ = json.NewDecoder(resp.Body).Decode(&successResponse)
 
 	assert.Equal(t, expectedResponse, successResponse)
+	assert.Equal(t, http.StatusOK, resp.Code)
 }
 
 func TestGameHandler_FlagHandlerWithNoGame(t *testing.T) {
 	var errorResponse response.ErrorResponse
 
-	validRequest := request.FlagRequest{Col: 1, Row: 1, Flag: true,}
+	validRequest := request.PointRequest{Col: 1, Row: 1, Flag: true,}
 
 	out, _ := json.Marshal(validRequest)
 	router := api.InitRoutes()
-	req, _ := http.NewRequest("POST", "/game/flag", bytes.NewBuffer(out))
+	req, _ := http.NewRequest("PUT", "/game/point/flag", bytes.NewBuffer(out))
 	resp := httptest.NewRecorder()
 
 	router.ServeHTTP(resp, req)
