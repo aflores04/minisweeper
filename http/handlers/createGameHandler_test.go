@@ -1,15 +1,14 @@
 package handlers_test
 
 import (
-	"net/http"
-    "net/http/httptest"
-    "testing"
-    "github.com/stretchr/testify/assert"
-	"minisweeper/api"
-	"minisweeper/http/response"	
-	"minisweeper/http/request"	
-	"encoding/json"	
 	"bytes"
+	"encoding/json"
+	"github.com/stretchr/testify/assert"
+	"minisweeper/http/request"
+	"minisweeper/http/response"
+	"net/http"
+	"net/http/httptest"
+	"testing"
 )
 
 func TestGameHandler_CreateGameHandlerWithInvalidRequest(t *testing.T) {
@@ -22,7 +21,7 @@ func TestGameHandler_CreateGameHandlerWithInvalidRequest(t *testing.T) {
 	}
 
 	for _, invalidRequest := range requests {
-		router := api.InitRoutes()
+		router := SetUpRouter()
 
 		out, _ := json.Marshal(invalidRequest)
 
@@ -47,7 +46,7 @@ func TestCreateGameHandlerWithValidRequest(t *testing.T) {
 	validRequest := request.CreateGameRequest{Cols: 1, Rows: 1, Mines: 1}
 
 	out, _ := json.Marshal(validRequest)
-	router := api.InitRoutes()
+	router := SetUpRouter()
 
 	req, _ := http.NewRequest("POST", "/api/v1/game/", bytes.NewBuffer(out))
 	resp := httptest.NewRecorder()
@@ -59,7 +58,7 @@ func TestCreateGameHandlerWithValidRequest(t *testing.T) {
 func TestCreateGameHandlerWithEmptyRequest(t *testing.T) {    
 	var errorResponse response.ErrorResponse
 	
-	router := api.InitRoutes()
+	router := SetUpRouter()
 
 	req, _ := http.NewRequest("POST", "/api/v1/game/", nil)
 	resp := httptest.NewRecorder()

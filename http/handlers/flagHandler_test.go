@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 	"minisweeper/api"
+	"minisweeper/database"
 	"minisweeper/http/handlers"
 	"minisweeper/http/request"
 	"minisweeper/http/response"
@@ -16,14 +17,15 @@ import (
 	"testing"
 )
 
-func setUpRouter() *gin.Engine  {
+func SetUpRouter() *gin.Engine  {
 	router := gin.Default()
-	gameRepository 	:= repositories.NewGameRepository()
+	connection := database.NewConnectionTest()
+	gameRepository 	:= repositories.NewGameRepository(connection)
 	gameService 	:= services.NewGameService(gameRepository)
 	gameHandler 	:= handlers.NewGameHandler(gameService)
 
 	// init a game
-	gameRepository.CreateGame(2,2,1)
+	gameRepository.Create(2,2,1)
 
 	v1 := router.Group("/api/v1")
 
@@ -48,7 +50,7 @@ func TestGameHandler_FlagHandlerWithBadRequest(t *testing.T) {
 	}
 
 	for _, invalidRequest := range requests {
-		router := setUpRouter()
+		router := SetUpRouter()
 
 		out, _ := json.Marshal(invalidRequest)
 		req, _ := http.NewRequest("PUT", "/api/v1/game/point/flag", bytes.NewBuffer(out))
@@ -71,7 +73,7 @@ func TestGameHandler_FlagHandlerSuccessResponse(t *testing.T) {
 	var successResponse response.PointResponse
 	validRequest := request.PointRequest{Col: 1, Row: 1, Flag: true}
 
-	router := setUpRouter()
+	router := SetUpRouter()
 	out, _ := json.Marshal(validRequest)
 	req, _ := http.NewRequest("PUT", "/api/v1/game/point/flag", bytes.NewBuffer(out))
 	resp := httptest.NewRecorder()

@@ -24,5 +24,5 @@ func main () {
 
 	apiRouter := api.InitRoutes()	
 
-	apiRouter.Run()
+	_ = apiRouter.Run()
 }

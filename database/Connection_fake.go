@@ -5,27 +5,22 @@ import (
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"log"
-	"os"
 )
 
-type DbConnection interface {
-	Connect() *gorm.DB
+func NewConnectionTest() DbConnection {
+	return TestConnection{}
 }
 
-type Connection struct {}
+type TestConnection struct {}
 
-func NewConnection() DbConnection {
-	return Connection{}
-}
-
-func (Connection) Connect() *gorm.DB {
+func (c TestConnection) Connect() *gorm.DB {
 	// refer https://github.com/go-sql-driver/mysql#dsn-data-source-name for details
 	dsn := fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
-		os.Getenv("MYSQL_USER"),
-		os.Getenv("MYSQL_PASSWORD"),
-		os.Getenv("MYSQL_HOST"),
-		os.Getenv("MYSQL_DBNAME"),
-		)
+		"root",
+		"root",
+		"localhost",
+		"minisweeper",
+	)
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 
 	if err != nil {
