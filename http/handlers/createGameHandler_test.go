@@ -26,7 +26,7 @@ func TestGameHandler_CreateGameHandlerWithInvalidRequest(t *testing.T) {
 
 		out, _ := json.Marshal(invalidRequest)
 
-		req, _ := http.NewRequest("POST", "/game", bytes.NewBuffer(out))
+		req, _ := http.NewRequest("POST", "/api/v1/game/", bytes.NewBuffer(out))
 		resp := httptest.NewRecorder()
 		router.ServeHTTP(resp, req)
 
@@ -49,7 +49,7 @@ func TestCreateGameHandlerWithValidRequest(t *testing.T) {
 	out, _ := json.Marshal(validRequest)
 	router := api.InitRoutes()
 
-	req, _ := http.NewRequest("POST", "/game", bytes.NewBuffer(out))
+	req, _ := http.NewRequest("POST", "/api/v1/game/", bytes.NewBuffer(out))
 	resp := httptest.NewRecorder()
 	router.ServeHTTP(resp, req)
 
@@ -61,7 +61,7 @@ func TestCreateGameHandlerWithEmptyRequest(t *testing.T) {
 	
 	router := api.InitRoutes()
 
-	req, _ := http.NewRequest("POST", "/game", nil)
+	req, _ := http.NewRequest("POST", "/api/v1/game/", nil)
 	resp := httptest.NewRecorder()
 	router.ServeHTTP(resp, req)
 	

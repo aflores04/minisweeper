@@ -14,10 +14,15 @@ func InitRoutes() *gin.Engine {
 	gameService 	:= services.NewGameService(gameRepository)
 	gameHandler 	:= handlers.NewGameHandler(gameService)
 
-	router.POST("/game", gameHandler.CreateGameHandler)
-	router.PUT("/game/point/flag", gameHandler.FlagHandler)
-	router.PUT("/game/point/open", gameHandler.OpenPointHandler)
-	router.GET("/game/current", gameHandler.CurrentGameHandler)
+	v1 := router.Group("/api/v1")
+
+	game := v1.Group("game")
+	game.POST("/", gameHandler.CreateGameHandler)
+	game.GET("/", gameHandler.CurrentGameHandler)
+
+	point := game.Group("point")
+	point.PUT("flag", gameHandler.FlagHandler)
+	point.PUT("open", gameHandler.OpenPointHandler)
 
 	return router
 }

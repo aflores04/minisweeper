@@ -21,7 +21,7 @@ func TestOpenPointHandler_SuccessResponse(t *testing.T)  {
 
 	out, _ := json.Marshal(validRequest)
 	router := setUpRouter()
-	req, _ := http.NewRequest("PUT", "/game/point/open", bytes.NewBuffer(out))
+	req, _ := http.NewRequest("PUT", "/api/v1/game/point/open", bytes.NewBuffer(out))
 	resp := httptest.NewRecorder()
 	router.ServeHTTP(resp, req)
 

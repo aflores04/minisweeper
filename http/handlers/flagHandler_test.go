@@ -25,8 +25,15 @@ func setUpRouter() *gin.Engine  {
 	// init a game
 	gameRepository.CreateGame(2,2,1)
 
-	router.PUT("/game/point/flag", gameHandler.FlagHandler)
-	router.PUT("/game/point/open", gameHandler.OpenPointHandler)
+	v1 := router.Group("/api/v1")
+
+	game := v1.Group("game")
+	game.POST("/", gameHandler.CreateGameHandler)
+	game.GET("/", gameHandler.CurrentGameHandler)
+
+	point := game.Group("point")
+	point.PUT("flag", gameHandler.FlagHandler)
+	point.PUT("open", gameHandler.OpenPointHandler)
 
 	return router
 }
@@ -44,7 +51,7 @@ func TestGameHandler_FlagHandlerWithBadRequest(t *testing.T) {
 		router := setUpRouter()
 
 		out, _ := json.Marshal(invalidRequest)
-		req, _ := http.NewRequest("PUT", "/game/point/flag", bytes.NewBuffer(out))
+		req, _ := http.NewRequest("PUT", "/api/v1/game/point/flag", bytes.NewBuffer(out))
 		resp := httptest.NewRecorder()
 
 		router.ServeHTTP(resp, req)
@@ -66,7 +73,7 @@ func TestGameHandler_FlagHandlerSuccessResponse(t *testing.T) {
 
 	router := setUpRouter()
 	out, _ := json.Marshal(validRequest)
-	req, _ := http.NewRequest("PUT", "/game/point/flag", bytes.NewBuffer(out))
+	req, _ := http.NewRequest("PUT", "/api/v1/game/point/flag", bytes.NewBuffer(out))
 	resp := httptest.NewRecorder()
 
 	router.ServeHTTP(resp, req)
@@ -86,7 +93,7 @@ func TestGameHandler_FlagHandlerWithNoGame(t *testing.T) {
 
 	out, _ := json.Marshal(validRequest)
 	router := api.InitRoutes()
-	req, _ := http.NewRequest("PUT", "/game/point/flag", bytes.NewBuffer(out))
+	req, _ := http.NewRequest("PUT", "/api/v1/game/point/flag", bytes.NewBuffer(out))
 	resp := httptest.NewRecorder()
 
 	router.ServeHTTP(resp, req)
