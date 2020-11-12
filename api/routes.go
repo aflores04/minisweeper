@@ -1,7 +1,8 @@
 package api
 
 import (
-	"github.com/gin-gonic/gin"	
+	"github.com/gin-gonic/gin"
+	"minisweeper/database"
 	"minisweeper/http/handlers"
 	"minisweeper/repositories"
 	"minisweeper/services"
@@ -10,7 +11,8 @@ import (
 func InitRoutes() *gin.Engine {
 	router := gin.Default()
 
-	gameRepository 	:= repositories.NewGameRepository()
+	connection := database.NewConnection()
+	gameRepository 	:= repositories.NewGameRepository(connection)
 	gameService 	:= services.NewGameService(gameRepository)
 	gameHandler 	:= handlers.NewGameHandler(gameService)
 

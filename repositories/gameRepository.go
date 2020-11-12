@@ -1,40 +1,71 @@
 package repositories
 
 import (
+	"log"
+	"minisweeper/database"
+	"minisweeper/domain"
 	"minisweeper/game"
 )
 
 type IGameRepository interface {
-	CreateGame(rows int, cols int, mines int) game.IGame
-	GetGame() game.IGame
+	Create(rows int, cols int, mines int) domain.Game
+	GetLast() domain.Game
 	AddRemoveFlag(row int, col int, flag bool) game.Point
 	OpenPoint(row int, col int) game.Point
 }
 
 type GameRepository struct {
 	game *game.Game
+	DbConnection database.DbConnection
 }
 
-func NewGameRepository() IGameRepository {
-	return &GameRepository{}
+func NewGameRepository(connection database.DbConnection) IGameRepository {
+	return &GameRepository{
+		DbConnection: connection,
+	}
 }
 
-func (r *GameRepository) CreateGame(rows int, cols int, mines int) game.IGame {
-	newGame := game.New(rows, cols, mines)
-	newGame.SetMines()
-	newGame.SetValues()
-
-	r.game = newGame
-
-	return newGame
-}
-
-func (r *GameRepository) GetGame() game.IGame {
-	if r.game == nil {
-		panic("there is no game running")
+func (r *GameRepository) Create(rows int, cols int, mines int) domain.Game {
+	game := domain.Game{
+		Rows: rows,
+		Cols: cols,
+		Mines: mines,
+		Status: "active",
 	}
 
-	return r.game
+	queryBuilder := r.DbConnection.Connect()
+
+	result := queryBuilder.Create(&game) // pass pointer of data to Create
+
+	setPoints(&game)
+
+	if result.Error != nil {
+		log.Println("some error", result.Error.Error())
+	}
+
+	return game
+}
+
+func setPoints(game *domain.Game) {
+
+	//for row := 0; row <= game.Rows; i++ {
+	//	for col := 0; col <= game.Cols; i++ {
+	//		point := domain.Point{
+	//			Row:
+	//		}
+	//	}
+	//}
+
+}
+
+func (r *GameRepository) GetLast() domain.Game {
+	queryBuilder := r.DbConnection.Connect()
+
+	var game domain.Game
+
+	queryBuilder.Last(&game)
+
+	return game
 }
 
 func (r *GameRepository) AddRemoveFlag(row int, col int, flag bool) game.Point {

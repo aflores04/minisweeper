@@ -1,14 +1,14 @@
 package services
 
 import (
-	"minisweeper/game"
+	"minisweeper/domain"
 	"minisweeper/http/response"
 	"minisweeper/repositories"
 )
 
 type IGameService interface {
-	Start(rows int, cols int, mines int) game.IGame
-	GetCurrent() game.IGame
+	Start(rows int, cols int, mines int) domain.Game
+	GetLast() domain.Game
 	AddRemoveFlag(row int, col int, flag bool) response.PointResponse
 	OpenPoint(row int, col int) response.PointResponse
 }
@@ -23,14 +23,14 @@ func NewGameService(repository repositories.IGameRepository) IGameService {
 	}
 }
 
-func (g *GameService) Start(rows int, cols int, mines int) game.IGame {
-	newGame := g.repository.CreateGame(rows, cols, mines)
+func (g *GameService) Start(rows int, cols int, mines int) domain.Game {
+	newGame := g.repository.Create(rows, cols, mines)
 
 	return newGame
 }
 
-func (g *GameService) GetCurrent() game.IGame {
-	return g.repository.GetGame()
+func (g *GameService) GetLast() domain.Game {
+	return g.repository.GetLast()
 }
 
 func (g *GameService) AddRemoveFlag(row int, col int, flag bool) response.PointResponse {

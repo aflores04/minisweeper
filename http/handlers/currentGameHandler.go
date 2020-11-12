@@ -8,10 +8,10 @@ import (
 func (handler *GameHandler) CurrentGameHandler (c *gin.Context) {
 	defer handler.CatchPanic(c)
 
-	current := handler.Service.GetCurrent()
-
+	//current := handler.Service.GetCurrent()
+	//
 	c.JSON(http.StatusOK, gin.H{
 		"status":  http.StatusOK,
-		"game": current,
+		//"game": current,
 	})
 }
