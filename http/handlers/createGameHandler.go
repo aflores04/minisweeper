@@ -22,8 +22,8 @@ func (handler *GameHandler) CreateGameHandler (c *gin.Context) {
 
 	game := handler.Service.Start(postRequest.Rows, postRequest.Cols, postRequest.Mines)
 
-	c.JSON(http.StatusOK, gin.H{
-		"status":  http.StatusOK,
-		"game": game,
+	c.JSON(http.StatusOK, response.CreateGameResponse{
+		Code: http.StatusOK,
+		Game: game,
 	})
 }
