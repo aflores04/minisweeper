@@ -25,6 +25,7 @@ func NewGameService(repository repositories.IGameRepository) IGameService {
 
 func (g *GameService) Start(rows int, cols int, mines int) *domain.Game {
 	newGame := g.repository.Create(rows, cols, mines)
+	g.repository.AddMines(newGame)
 
 	return newGame
 }

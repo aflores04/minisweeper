@@ -1,5 +1,7 @@
 package domain
 
+import "errors"
+
 type IPoint interface {
 	GetRow() int
 	GetCol() int
@@ -37,4 +39,14 @@ func (p Point) GetRow() int {
 
 func (p Point) GetCol() int {
 	return p.Col
+}
+
+func (p *Point) AddMine() error {
+	if p.Mine {
+		return errors.New("already got a mine")
+	}
+
+	p.Mine = true
+
+	return nil
 }

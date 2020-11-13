@@ -38,3 +38,20 @@ func TestGameRepository_GetPoints(t *testing.T) {
 
 	assert.Equal(t, expectedPoints, points)
 }
+
+func TestGameRepository_AddMines(t *testing.T) {
+	repository := getRepository()
+
+	newGame := repository.Create(2,2,3)
+	game := repository.AddMines(newGame)
+
+	var mines int = 0
+
+	for _, point := range game.Points {
+		if point.Mine {
+			mines++
+		}
+	}
+
+	assert.Equal(t, 3, mines)
+}
