@@ -8,7 +8,7 @@ create table games(
 );
 
 drop table if exists point;
-create table point(
+create table points(
     id      int(11) primary key auto_increment,
     row     int(11) not null,
     col     int(11) not null,
@@ -16,6 +16,6 @@ create table point(
     flag    int(11) not null,
     value  int(11) not null,
     open    int(11) not null,
-    game_id int(11) not null,
+    game int(11) not null,
     foreign key (game_id) references games(id)
 );
