@@ -8,7 +8,7 @@ import (
 )
 
 func (handler *GameHandler) OpenPointHandler(c *gin.Context) {
-	var pointResponse response.PointResponse
+	//var pointResponse response.PointResponse
 
 	defer handler.CatchPanic(c)
 
@@ -22,8 +22,8 @@ func (handler *GameHandler) OpenPointHandler(c *gin.Context) {
 		return
 	}
 
-	pointResponse = handler.Service.OpenPoint(postRequest.Row, postRequest.Col)
-	pointResponse.Code = http.StatusOK
-
-	c.JSON(http.StatusOK, pointResponse)
+	//pointResponse = handler.Service.OpenPoint(postRequest.Row, postRequest.Col)
+	//pointResponse.Code = http.StatusOK
+	//
+	//c.JSON(http.StatusOK, pointResponse)
 }

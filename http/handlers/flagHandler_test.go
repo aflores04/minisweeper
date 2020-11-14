@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
-	"minisweeper/api"
 	"minisweeper/database"
 	"minisweeper/http/handlers"
 	"minisweeper/http/request"
@@ -20,9 +19,15 @@ import (
 func SetUpRouter() *gin.Engine  {
 	router := gin.Default()
 	connection := database.NewConnectionTest()
+
 	gameRepository 	:= repositories.NewGameRepository(connection)
+	pointRepository := repositories.NewPointRepository(connection)
+
 	gameService 	:= services.NewGameService(gameRepository)
+	pointService 	:= services.NewPointService(pointRepository)
+
 	gameHandler 	:= handlers.NewGameHandler(gameService)
+	pointHandler 	:= handlers.NewPointHandler(pointService)
 
 	// init a game
 	gameRepository.Create(2,2,1)
@@ -34,8 +39,8 @@ func SetUpRouter() *gin.Engine  {
 	game.GET("/", gameHandler.CurrentGameHandler)
 
 	point := game.Group("point")
-	point.PUT("flag", gameHandler.FlagHandler)
-	point.PUT("open", gameHandler.OpenPointHandler)
+	point.PUT("flag", pointHandler.FlagHandler)
+	//point.PUT("open", gameHandler.OpenPointHandler)
 
 	return router
 }
@@ -44,7 +49,7 @@ func TestGameHandler_FlagHandlerWithBadRequest(t *testing.T) {
 	var errorResponse response.ErrorResponse
 
 	requests := []map[string]interface{}{
-		{"col": 0, "row": 0, "flag": 12},
+		{"id": 99999, "col": 0, "row": 0, "flag": 12},
 		{"col": "some string", "row": "other", "flag": "hello world"},
 		{"col": -123, "row": 123, "flag": true},
 	}
@@ -70,39 +75,41 @@ func TestGameHandler_FlagHandlerWithBadRequest(t *testing.T) {
 }
 
 func TestGameHandler_FlagHandlerSuccessResponse(t *testing.T) {
-	var successResponse response.PointResponse
-	validRequest := request.PointRequest{Col: 1, Row: 1, Flag: true}
+	var (
+		successResponse response.PointResponse
+		out []byte
+		req *http.Request
+		resp *httptest.ResponseRecorder
+	)
+
+	gameRepository := repositories.NewGameRepository(database.NewConnectionTest())
+
+	game := gameRepository.Create(1,1,1)
 
 	router := SetUpRouter()
-	out, _ := json.Marshal(validRequest)
-	req, _ := http.NewRequest("PUT", "/api/v1/game/point/flag", bytes.NewBuffer(out))
-	resp := httptest.NewRecorder()
+
+	trueRequest 	:= request.PointRequest{ID: game.Points[0].ID, Flag: true}
+	falseRequest 	:= request.PointRequest{ID: game.Points[0].ID, Flag: false}
+
+	out, _ = json.Marshal(trueRequest)
+	req, _ = http.NewRequest("PUT", "/api/v1/game/point/flag", bytes.NewBuffer(out))
+	resp = httptest.NewRecorder()
 
 	router.ServeHTTP(resp, req)
-
-	expectedResponse := response.PointResponse{Code: http.StatusOK, Row: 1, Col: 1, Value: 1, Mine: false, Flag: true}
 
 	_ = json.NewDecoder(resp.Body).Decode(&successResponse)
 
-	assert.Equal(t, expectedResponse, successResponse)
+	assert.Equal(t, true, successResponse.Point.Flag)
 	assert.Equal(t, http.StatusOK, resp.Code)
-}
 
-func TestGameHandler_FlagHandlerWithNoGame(t *testing.T) {
-	var errorResponse response.ErrorResponse
-
-	validRequest := request.PointRequest{Col: 1, Row: 1, Flag: true,}
-
-	out, _ := json.Marshal(validRequest)
-	router := api.InitRoutes()
-	req, _ := http.NewRequest("PUT", "/api/v1/game/point/flag", bytes.NewBuffer(out))
-	resp := httptest.NewRecorder()
+	out, _ = json.Marshal(falseRequest)
+	req, _ = http.NewRequest("PUT", "/api/v1/game/point/flag", bytes.NewBuffer(out))
+	resp = httptest.NewRecorder()
 
 	router.ServeHTTP(resp, req)
 
-	expectedResponse := response.ErrorResponse{Code: http.StatusBadRequest, Message: "there is no game running",}
+	_ = json.NewDecoder(resp.Body).Decode(&successResponse)
 
-	_ = json.NewDecoder(resp.Body).Decode(&errorResponse)
-
-	assert.Equal(t, expectedResponse, errorResponse)
+	assert.Equal(t, false, successResponse.Point.Flag)
+	assert.Equal(t, http.StatusOK, resp.Code)
 }

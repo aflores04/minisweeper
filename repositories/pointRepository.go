@@ -28,7 +28,7 @@ func (r *PointRepository) AddRemoveFlag(id uint, flag bool) *domain.Point {
 	err := queryBuilder.First(&point, id)
 
 	if err.Error != nil {
-		panic("point not found")
+		panic("error in request")
 	}
 
 	point.Flag = flag

@@ -7,9 +7,7 @@ import (
 	"net/http"
 )
 
-func (handler *GameHandler) FlagHandler (c *gin.Context) {
-	var pointResponse response.PointResponse
-
+func (handler *PointHandler) FlagHandler (c *gin.Context) {
 	defer handler.CatchPanic(c)
 
 	var postRequest request.PointRequest
@@ -22,8 +20,10 @@ func (handler *GameHandler) FlagHandler (c *gin.Context) {
 		return
 	}
 
-	pointResponse = handler.Service.AddRemoveFlag(postRequest.Row, postRequest.Col, postRequest.Flag)
-	pointResponse.Code = http.StatusOK
+	point := handler.Service.AddRemoveFlag(postRequest.ID, postRequest.Flag)
 
-	c.JSON(http.StatusOK, pointResponse)
+	c.JSON(http.StatusOK, response.PointResponse{
+		Code: http.StatusOK,
+		Point: point,
+	})
 }

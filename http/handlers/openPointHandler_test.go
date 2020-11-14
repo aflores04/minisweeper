@@ -13,8 +13,7 @@ import (
 
 func TestOpenPointHandler_SuccessResponse(t *testing.T)  {
 	validRequest := request.PointRequest{
-		Col: 1,
-		Row: 1,
+		ID: 1,
 	}
 
 	var successResponse response.PointResponse
@@ -27,6 +26,6 @@ func TestOpenPointHandler_SuccessResponse(t *testing.T)  {
 
 	_ = json.NewDecoder(resp.Body).Decode(&successResponse)
 
-	assert.Equal(t, true, successResponse.Open)
+	assert.Equal(t, true, successResponse.Point.Open)
 	assert.Equal(t, http.StatusOK, resp.Code)
 }

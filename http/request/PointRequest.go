@@ -1,8 +1,7 @@
 package request
 
 type PointRequest struct {
-	Col int `json:"col"`
-	Row int `json:"row"`
+	ID uint `json:"id"`
 	Flag bool `json:"flag"`
 	Open bool `json:"open"`
 }
