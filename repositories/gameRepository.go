@@ -12,8 +12,6 @@ type IGameRepository interface {
 	GetPoints(rows int, cols int) []domain.Point
 	GetLast() *domain.Game
 	AddMines(game *domain.Game) *domain.Game
-	//AddRemoveFlag(row int, col int, flag bool) game.Point
-	//OpenPoint(row int, col int) game.Point
 }
 
 type GameRepository struct {
@@ -44,7 +42,7 @@ func (r *GameRepository) Create(rows int, cols int, mines int) *domain.Game {
 	return game
 }
 
-func (r *GameRepository) GetPoints(rows int, cols int) []domain.Point {
+func (r GameRepository) GetPoints(rows int, cols int) []domain.Point {
 	var points []domain.Point
 
 	for row := 1; row <= rows; row++ {
@@ -92,10 +90,6 @@ func (r GameRepository) AddMines(game *domain.Game) *domain.Game {
 	return game
 }
 
-func (r *GameRepository) GetPointsWithMines() {
-
-}
-
 func (r *GameRepository) GetLast() *domain.Game {
 	queryBuilder := r.DbConnection.Connect()
 
@@ -105,42 +99,3 @@ func (r *GameRepository) GetLast() *domain.Game {
 
 	return &game
 }
-
-//func (r *GameRepository) AddRemoveFlag(row int, col int, flag bool) game.Point {
-//	if r.game != nil {
-//		for keyRow, rowPoint := range r.game.GetSquare().PointRows {
-//			for keyCol, point := range rowPoint.Points {
-//				if point.Y == row && point.X == col {
-//					r.game.Square.PointRows[keyRow].Points[keyCol].Flag = flag
-//
-//					return *r.game.Square.PointRows[keyRow].Points[keyCol]
-//				}
-//			}
-//		}
-//
-//		panic("error in request")
-//	}
-//
-//	panic("there is no game running")
-//}
-
-//func (r *GameRepository) OpenPoint(row int, col int) game.Point {
-//	if r.game != nil {
-//
-//		if row > r.game.Rows || col > r.game.Cols {
-//			panic("error in request")
-//		}
-//		for keyRow, rowPoint := range r.game.GetSquare().PointRows {
-//			for keyCol, point := range rowPoint.Points {
-//				if point.Y == row && point.X == col {
-//					r.game.Square.PointRows[keyRow].Points[keyCol].Open = true
-//
-//					return *r.game.Square.PointRows[keyRow].Points[keyCol]
-//				}
-//			}
-//		}
-//
-//	}
-//
-//	panic("there is no game running")
-//}

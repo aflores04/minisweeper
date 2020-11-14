@@ -1,22 +1,23 @@
-package repositories
+package repositories_test
 
 import (
 	"github.com/stretchr/testify/assert"
 	"minisweeper/database"
 	"minisweeper/domain"
+	"minisweeper/repositories"
 	"testing"
 )
 
-func getRepository() IGameRepository {
+func getGameRepository() repositories.IGameRepository {
 	connection := database.NewConnectionTest()
 
-	repository := NewGameRepository(connection)
+	repository := repositories.NewGameRepository(connection)
 
 	return repository
 }
 
 func TestGameRepository_CreateGame(t *testing.T) {
-	repository := getRepository()
+	repository := getGameRepository()
 	newGame := repository.Create(2,2,2)
 
 	expectedGame := repository.GetLast()
@@ -25,7 +26,7 @@ func TestGameRepository_CreateGame(t *testing.T) {
 }
 
 func TestGameRepository_GetPoints(t *testing.T) {
-	repository := getRepository()
+	repository := getGameRepository()
 
 	points := repository.GetPoints(2,2)
 
@@ -40,7 +41,7 @@ func TestGameRepository_GetPoints(t *testing.T) {
 }
 
 func TestGameRepository_AddMines(t *testing.T) {
-	repository := getRepository()
+	repository := getGameRepository()
 
 	newGame := repository.Create(2,2,3)
 	game := repository.AddMines(newGame)
