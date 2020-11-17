@@ -16,8 +16,8 @@ func InitRoutes() *gin.Engine {
 	gameRepository 	:= repositories.NewGameRepository(connection)
 	pointRepository := repositories.NewPointRepository(connection)
 
-	gameService 	:= services.NewGameService(gameRepository)
 	pointService	:= services.NewPointService(pointRepository)
+	gameService 	:= services.NewGameService(gameRepository, pointRepository)
 
 	gameHandler 	:= handlers.NewGameHandler(gameService)
 	pointHandler	:= handlers.NewPointHandler(pointService)

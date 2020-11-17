@@ -23,7 +23,7 @@ func SetUpRouter() *gin.Engine  {
 	gameRepository 	:= repositories.NewGameRepository(connection)
 	pointRepository := repositories.NewPointRepository(connection)
 
-	gameService 	:= services.NewGameService(gameRepository)
+	gameService 	:= services.NewGameService(gameRepository, pointRepository)
 	pointService 	:= services.NewPointService(pointRepository)
 
 	gameHandler 	:= handlers.NewGameHandler(gameService)

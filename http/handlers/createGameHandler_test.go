@@ -33,17 +33,16 @@ func TestGameHandler_CreateGameHandlerWithInvalidRequest(t *testing.T) {
 
 		expectedResponse := response.ErrorResponse{
 			Code: http.StatusBadRequest,
-			Message: "error in request",
 		}
 
-		if !assert.Equal(t, expectedResponse, errorResponse) {
+		if !assert.Equal(t, expectedResponse.Code, errorResponse.Code) {
 			t.Log(invalidRequest)
 		}
 	}
 }
 
 func TestCreateGameHandlerWithValidRequest(t *testing.T) {    
-	validRequest := request.CreateGameRequest{Cols: 1, Rows: 1, Mines: 1}
+	validRequest := request.CreateGameRequest{Cols: 4, Rows: 4, Mines: 2}
 
 	out, _ := json.Marshal(validRequest)
 	router := SetUpRouter()

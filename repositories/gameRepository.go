@@ -1,6 +1,8 @@
 package repositories
 
 import (
+	"errors"
+	"gorm.io/gorm"
 	"log"
 	"math/rand"
 	"minisweeper/database"
@@ -12,6 +14,8 @@ type IGameRepository interface {
 	GetPoints(rows int, cols int) []domain.Point
 	GetLast() *domain.Game
 	AddMines(game *domain.Game) *domain.Game
+	GetPointByPos(row int, col int) (*domain.Point, error)
+	Find(id uint) *domain.Game
 }
 
 type GameRepository struct {
@@ -42,11 +46,23 @@ func (r *GameRepository) Create(rows int, cols int, mines int) *domain.Game {
 	return game
 }
 
+func (r *GameRepository) Find(id uint) *domain.Game {
+	queryBuilder := r.DbConnection.Connect()
+
+	var game domain.Game
+
+	queryBuilder.Preload("Points").Find(&game, id)
+
+	return &game
+}
+
 func (r GameRepository) GetPoints(rows int, cols int) []domain.Point {
 	var points []domain.Point
 
 	for row := 1; row <= rows; row++ {
 		for col := 1; col <= cols; col++ {
+
+
 			point := domain.Point{
 				Row: row,
 				Col: col,
@@ -98,4 +114,18 @@ func (r *GameRepository) GetLast() *domain.Game {
 	queryBuilder.Preload("Points").Last(&game)
 
 	return &game
+}
+
+func (r GameRepository) GetPointByPos(row int, col int) (*domain.Point, error) {
+	queryBuilder := r.DbConnection.Connect()
+
+	var point domain.Point
+
+	err := queryBuilder.Where("row = ? and col = ? and game = ?", row, col, r.game.ID).First(&point).Error
+
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, errors.New("not found")
+	}
+
+	return &point, nil
 }
